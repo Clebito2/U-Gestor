@@ -1,1 +1,179 @@
-/* Main CSS styles */
+/* Importação de fontes (ajuste conforme a identidade visual da Live) */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@400;600&display=swap');
+
+:root {
+    /* Cores da Identidade Visual da Live (Ajuste esses valores) */
+    --live-blue-primary: #0056B3;
+    --live-grey-secondary: #6C757D;
+    --live-accent: #FF6F00;
+    --live-background-light: #F8F9FA;
+    --live-text-dark: #343A40;
+
+    /* Cores de Status */
+    --status-completed: #28A745; /* Verde */
+    --status-in-progress: #FFC107; /* Amarelo */
+    --status-pending: #6C757D; /* Cinza do Live Grey */
+    --status-overdue: #DC3545; /* Vermelho */
+
+    /* Fontes da Identidade Visual da Live (Ajuste esses valores) */
+    --font-heading: 'Montserrat', sans-serif;
+    --font-body: 'Open Sans', sans-serif;
+
+    /* Outros */
+    --border-radius-soft: 8px;
+    --shadow-deep: 0 10px 25px rgba(0,0,0,0.1);
+    --shadow-light: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-body);
+    color: var(--live-text-dark);
+    line-height: 1.6;
+    background-color: var(--live-background-light);
+    /* Adiciona uma textura sutil de fundo - ajuste o caminho da imagem */
+    background-image: url('../assets/subtle-texture.png'); /* Crie ou encontre uma imagem de textura sutil */
+    background-repeat: repeat;
+    background-attachment: fixed;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.live-header {
+    background: linear-gradient(135deg, var(--live-blue-primary), darken(var(--live-blue-primary), 15%)); /* Gradiente sutil */
+    color: white;
+    padding: 40px 0;
+    text-align: center;
+    box-shadow: var(--shadow-deep);
+    position: relative; /* Para a textura do header */
+    overflow: hidden; /* Garante que a textura não vaze */
+}
+
+.live-header::before { /* Textura abstrata no header */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill-opacity=".05"><rect x="0" y="0" width="100" height="100" fill="white"/><circle cx="50" cy="50" r="40" fill="white"/></svg>'); /* Exemplo de SVG para textura geométrica */
+    background-size: 20px 20px;
+    opacity: 0.1;
+    z-index: 0;
+}
+
+.live-header > .container {
+    position: relative; /* Conteúdo acima da textura */
+    z-index: 1;
+}
+
+.live-header h1 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-size: 2.8em;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.live-header p#client-info {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.project-summary span {
+    display: inline-block;
+    background-color: rgba(255,255,255,0.15);
+    padding: 8px 15px;
+    border-radius: var(--border-radius-soft);
+    margin: 0 10px 10px;
+    font-size: 0.9em;
+    font-weight: 600;
+}
+
+/* Overall Progress Bar */
+.overall-progress-container {
+    width: 80%;
+    margin: 20px auto 0;
+    text-align: left;
+    background-color: rgba(255,255,255,0.1);
+    border-radius: var(--border-radius-soft);
+    padding: 15px 25px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+}
+
+.progress-bar-label {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.progress-bar-wrapper {
+    background-color: rgba(255,255,255,0.2);
+    border-radius: 5px;
+    overflow: hidden;
+    height: 20px;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: var(--live-accent);
+    transition: width 0.8s ease-out; /* Movimento suave */
+    border-radius: 5px;
+    position: relative;
+}
+
+.progress-bar::after { /* Pequeno gradiente para profundidade */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+}
+
+#overall-progress-text {
+    display: block;
+    text-align: right;
+    margin-top: 5px;
+    font-weight: 600;
+}
+
+.live-footer {
+    background-color: var(--live-text-dark); /* Fundo escuro para contraste */
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    margin-top: 50px;
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .live-header h1 {
+        font-size: 2em;
+    }
+    .live-header p#client-info {
+        font-size: 1em;
+    }
+    .project-summary span {
+        display: block;
+        margin: 5px auto;
+        width: fit-content;
+    }
+    .overall-progress-container {
+        width: 95%;
+        padding: 10px 15px;
+    }
+}

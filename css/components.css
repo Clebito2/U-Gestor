@@ -1,1 +1,114 @@
-/* Component CSS styles */
+.phase-section {
+    background-color: var(--card-bg);
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    margin-bottom: 30px;
+}
+
+.phase-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+.phase-header h2 {
+    margin: 0;
+    color: var(--primary-color);
+}
+
+.phase-content {
+    display: none; /* Escondido por padrão, JavaScript vai alternar */
+}
+
+.phase-content.active {
+    display: block;
+}
+
+.task-card {
+    background-color: var(--secondary-color);
+    border-left: 5px solid var(--border-color);
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.task-card.status-completed { border-left-color: var(--completed-color); }
+.task-card.status-in-progress { border-left-color: var(--in-progress-color); }
+.task-card.status-pending { border-left-color: var(--pending-color); }
+.task-card.status-overdue { border-left-color: var(--overdue-color); }
+
+
+.task-card strong {
+    font-size: 1.1em;
+    color: var(--text-color);
+}
+
+.task-details {
+    font-size: 0.9em;
+    color: #555;
+}
+
+.task-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85em;
+    color: #777;
+    flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+}
+
+.task-meta span {
+    margin-right: 15px;
+    margin-bottom: 5px;
+}
+
+.task-meta .status {
+    font-weight: bold;
+}
+
+/* Tooltips */
+[data-tooltip] {
+    position: relative;
+    cursor: help;
+}
+
+[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-size: 0.8em;
+    margin-bottom: 5px;
+    z-index: 10;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column;
+    }
+    .sidebar {
+        position: static; /* Remove sticky em mobile */
+        width: 100%;
+    }
+    .task-meta {
+        flex-direction: column;
+    }
+    .task-meta span {
+        margin-right: 0;
+    }
+}
