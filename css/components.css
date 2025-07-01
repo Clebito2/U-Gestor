@@ -112,3 +112,155 @@
         margin-right: 0;
     }
 }
+
+/* Estilos para o Mind Map adicionados abaixo */
+
+.mind-map-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Layout flexível */
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.node-card {
+    background-color: var(--live-background-light);
+    border: 1px solid rgba(var(--live-blue-primary), 0.1);
+    border-radius: var(--border-radius-soft);
+    box-shadow: var(--shadow-light);
+    padding: 25px;
+    transition: all 0.3s ease-out; /* Movimento no hover */
+    position: relative;
+    overflow: hidden;
+}
+
+.node-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-deep);
+}
+
+.node-card.type-phase {
+    border-left: 8px solid var(--live-blue-primary); /* Destaque para fases principais */
+}
+
+.node-card.type-sub-phase {
+    border-left: 5px solid var(--live-accent); /* Destaque para sub-fases */
+}
+
+.node-card.type-task {
+    border-left: 3px solid var(--live-grey-secondary); /* Destaque para tarefas detalhadas */
+    background-color: rgba(var(--live-blue-primary), 0.03); /* Fundo mais suave para tarefas */
+}
+
+.node-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+.node-header h3 {
+    font-family: var(--font-heading);
+    font-size: 1.5em;
+    color: var(--live-blue-primary);
+    margin: 0;
+    flex-grow: 1;
+}
+
+.node-header .toggle-icon {
+    font-size: 1.2em;
+    color: var(--live-accent);
+    transition: transform 0.3s ease; /* Movimento na seta */
+}
+
+.node-card.expanded .toggle-icon {
+    transform: rotate(90deg); /* Gira a seta quando expandido */
+}
+
+.node-content {
+    display: none; /* Escondido por padrão */
+    padding-top: 10px;
+    border-top: 1px dashed rgba(var(--live-grey-secondary), 0.3);
+    margin-top: 15px;
+}
+
+.node-card.expanded .node-content {
+    display: block; /* Mostra quando expandido */
+    animation: fadeIn 0.5s ease-out; /* Movimento de aparecer */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.node-description {
+    font-size: 0.95em;
+    color: var(--live-text-dark);
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.node-details {
+    font-size: 0.85em;
+    color: var(--live-grey-secondary);
+    margin-bottom: 10px;
+}
+
+.node-meta {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    font-size: 0.8em;
+    color: var(--live-grey-secondary);
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(var(--live-grey-secondary), 0.1);
+}
+
+.node-meta span {
+    margin-right: 15px;
+    margin-bottom: 5px;
+}
+
+.status-indicator {
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-size: 0.75em;
+    white-space: nowrap;
+    color: white; /* Cor do texto do status */
+}
+
+.status-completed { background-color: var(--status-completed); }
+.status-in-progress { background-color: var(--status-in-progress); }
+.status-pending { background-color: var(--status-pending); }
+.status-overdue { background-color: var(--status-overdue); }
+
+/* Ícones de Status */
+.status-icon {
+    font-size: 0.9em;
+}
+
+.node-link {
+    color: var(--live-accent);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.node-link:hover {
+    color: darken(var(--live-accent), 10%);
+    text-decoration: underline;
+}
+
+/* Responsividade para nós */
+@media (max-width: 768px) {
+    .mind-map-grid {
+        grid-template-columns: 1fr; /* Uma coluna em telas menores */
+    }
+}

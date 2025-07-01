@@ -1,116 +1,151 @@
+// js/app.js
+
 document.addEventListener('DOMContentLoaded', () => {
-    const clientData = CASA_DIBS_DATA; // Assume que 'CASA_DIBS_DATA' está disponível globalmente
+    // A variável CLIENT_DATA é carregada de js/data-client.js
+    if (typeof CLIENT_DATA === 'undefined') {
+        console.error("CLIENT_DATA não encontrado. Verifique se 'js/data-client.js' foi carregado corretamente.");
+        return;
+    }
 
     const projectTitleElem = document.getElementById('project-title');
     const clientInfoElem = document.getElementById('client-info');
-    const sidebarNavElem = document.getElementById('sidebar-nav');
-    const contentAreaElem = document.getElementById('content-area');
+    const startDateElem = document.getElementById('startDate');
+    const goLiveDateElem = document.getElementById('goLiveDate');
+    const endDateElem = document.getElementById('endDate');
     const overallProgressBar = document.getElementById('overall-progress-bar');
     const overallProgressText = document.getElementById('overall-progress-text');
+    const mindMapContainer = document.getElementById('mind-map-container');
 
-    // Preenche o cabeçalho
-    projectTitleElem.textContent = clientData.projectName;
-    clientInfoElem.innerHTML = `Cliente: <strong>${clientData.clientName}</strong> | Contato: ${clientData.contact}<br>Consultor: ${clientData.consultant}`;
+    // Preenche o cabeçalho com as informações do cliente
+    projectTitleElem.textContent = CLIENT_DATA.projectName;
+    clientInfoElem.innerHTML = `Cliente: <strong>${CLIENT_DATA.clientName}</strong> | Contato: ${CLIENT_DATA.contact}<br>Consultor: ${CLIENT_DATA.consultant}`;
+    if (startDateElem) startDateElem.textContent = new Date(CLIENT_DATA.startDate).toLocaleDateString('pt-BR');
+    if (goLiveDateElem) goLiveDateElem.textContent = new Date(CLIENT_DATA.goLiveDate).toLocaleDateString('pt-BR');
+    if (endDateElem) endDateElem.textContent = new Date(CLIENT_DATA.endDate).toLocaleDateString('pt-BR');
 
-    let totalTasks = 0;
-    let completedTasks = 0;
+    let totalTasksCount = 0;
+    let completedTasksCount = 0;
 
-    // Renderiza as seções e tarefas
-    clientData.phases.forEach(phase => {
-        // Adiciona link na sidebar
-        const navLink = document.createElement('a');
-        navLink.href = `#${phase.id}`;
-        navLink.textContent = phase.title;
-        sidebarNavElem.appendChild(navLink);
+    // Função recursiva para criar os nós do mapa mental
+    function createNode(nodeData, level = 0) {
+        let status = nodeData.status;
+        let isOverdue = false;
 
-        // Cria a seção da fase
-        const phaseSection = document.createElement('section');
-        phaseSection.id = phase.id;
-        phaseSection.className = 'phase-section';
+        // Se for uma tarefa (type === 'task'), verifica o status e prazo
+        if (nodeData.type === 'task') {
+            totalTasksCount++;
+            if (status === 'completed') {
+                completedTasksCount++;
+            } else if (status === 'pending' || status === 'in-progress') { // Apenas tarefas pendentes ou em progresso podem ficar atrasadas
+                const today = new Date();
+                // Normaliza a data para evitar problemas com fuso horário / hora
+                const dueDate = new Date(nodeData.dueDate);
+                dueDate.setHours(0, 0, 0, 0);
+                today.setHours(0, 0, 0, 0);
 
-        const phaseHeader = document.createElement('div');
-        phaseHeader.className = 'phase-header';
-        phaseHeader.innerHTML = `<h2>${phase.title}</h2><i class="fas fa-chevron-down"></i>`;
-        phaseSection.appendChild(phaseHeader);
-
-        const phaseContent = document.createElement('div');
-        phaseContent.className = 'phase-content'; // Escondido por padrão
-        phaseContent.innerHTML = `<p>${phase.description}</p>`;
-
-        // Adiciona as tarefas dentro do conteúdo da fase
-        phase.tasks.forEach(task => {
-            totalTasks++;
-            if (task.status === 'completed') {
-                completedTasks++;
+                if (today > dueDate) {
+                    isOverdue = true;
+                    status = 'overdue'; // Sobrescreve o status para 'atrasado' se o prazo passou
+                }
             }
+        }
 
-            const taskCard = document.createElement('div');
-            // Determina a classe de status para estilização de borda
-            let statusClass = '';
+        const nodeCard = document.createElement('div');
+        nodeCard.className = `node-card type-${nodeData.type || 'task'} ${status ? `status-${status}` : ''}`;
+        if (nodeData.type !== 'task' && nodeData.nodes && nodeData.nodes.length > 0) { // Apenas nós com filhos são clicáveis
+            nodeCard.classList.add('clickable');
+        }
+
+
+        const nodeHeader = document.createElement('div');
+        nodeHeader.className = 'node-header';
+        nodeHeader.innerHTML = `
+            <h3>${nodeData.name}</h3>
+            ${(nodeData.nodes && nodeData.nodes.length > 0) ? `<i class="fas fa-chevron-right toggle-icon"></i>` : ''}
+        `;
+        nodeCard.appendChild(nodeHeader);
+
+        const nodeContent = document.createElement('div');
+        nodeContent.className = 'node-content';
+
+        if (nodeData.description) {
+            nodeContent.innerHTML += `<p class="node-description">${nodeData.description}</p>`;
+        }
+        if (nodeData.details) {
+            nodeContent.innerHTML += `<p class="node-details"><strong>Detalhes:</strong> ${nodeData.details}</p>`;
+        }
+
+        // Adiciona informações meta para tarefas
+        if (nodeData.type === 'task') {
             let statusIcon = '';
             let statusText = '';
-            const today = new Date();
-            const dueDate = new Date(task.dueDate);
-
-            if (task.status === 'completed') {
-                statusClass = 'status-completed';
-                statusIcon = '<i class="fas fa-check-circle status-icon"></i>';
-                statusText = 'Concluído';
-            } else if (task.status === 'in-progress') {
-                statusClass = 'status-in-progress';
-                statusIcon = '<i class="fas fa-spinner status-icon fa-spin"></i>';
-                statusText = 'Em Progresso';
-            } else if (task.status === 'pending') {
-                if (today > dueDate) {
-                    statusClass = 'status-overdue';
-                    statusIcon = '<i class="fas fa-exclamation-triangle status-icon"></i>';
-                    statusText = 'Atrasado';
-                } else {
-                    statusClass = 'status-pending';
-                    statusIcon = '<i class="fas fa-hourglass-half status-icon"></i>';
-                    statusText = 'Pendente';
-                }
-            } else { // Default para status desconhecido
-                statusClass = 'status-pending';
-                statusIcon = '<i class="fas fa-question-circle status-icon"></i>';
-                statusText = 'Desconhecido';
+            switch (status) {
+                case 'completed': statusIcon = '<i class="fas fa-check-circle status-icon"></i>'; statusText = 'Concluído'; break;
+                case 'in-progress': statusIcon = '<i class="fas fa-spinner status-icon fa-spin"></i>'; statusText = 'Em Progresso'; break;
+                case 'pending': statusIcon = '<i class="fas fa-hourglass-half status-icon"></i>'; statusText = 'Pendente'; break;
+                case 'overdue': statusIcon = '<i class="fas fa-exclamation-triangle status-icon"></i>'; statusText = 'ATRASADO'; break;
+                default: statusIcon = '<i class="fas fa-question-circle status-icon"></i>'; statusText = 'N/A'; break;
             }
 
-            taskCard.className = `task-card ${statusClass}`;
-            taskCard.innerHTML = `
-                <strong>${task.name}</strong>
-                <p class="task-details">${task.details}</p>
-                <div class="task-meta">
-                    <span>Responsável: <strong>${task.responsible}</strong></span>
-                    <span>Prazo: <strong>${new Date(task.dueDate).toLocaleDateString('pt-BR')}</strong></span>
-                    <span class="status ${statusClass}">${statusIcon}${statusText}</span>
+            nodeContent.innerHTML += `
+                <div class="node-meta">
+                    <span><strong>Responsável:</strong> ${nodeData.responsible}</span>
+                    <span><strong>Prazo:</strong> ${new Date(nodeData.dueDate).toLocaleDateString('pt-BR')}</span>
+                    <span class="status-indicator status-${status}">${statusIcon} ${statusText}</span>
                 </div>
-                ${task.notes ? `<p class="task-details" data-tooltip="Observações Adicionais"><em>${task.notes}</em></p>` : ''}
-                ${task.link ? `<p class="task-details"><a href="${task.link}" target="_blank" rel="noopener noreferrer">Acessar Recurso <i class="fas fa-external-link-alt"></i></a></p>` : ''}
             `;
-            phaseContent.appendChild(taskCard);
+            if (nodeData.notes) {
+                nodeContent.innerHTML += `<p class="node-details node-notes"><em>Observações: ${nodeData.notes}</em></p>`;
+            }
+            if (nodeData.link) {
+                nodeContent.innerHTML += `<p class="node-details"><a href="${nodeData.link}" target="_blank" rel="noopener noreferrer" class="node-link">Acessar Recurso <i class="fas fa-external-link-alt"></i></a></p>`;
+            }
+        }
+
+        const childNodesContainer = document.createElement('div');
+        childNodesContainer.className = 'child-nodes-container';
+        // Renderiza nós filhos recursivamente
+        if (nodeData.nodes && nodeData.nodes.length > 0) {
+            nodeData.nodes.forEach(childNode => {
+                // Garante que cada nó filho também tenha um 'type', default para 'task' se não especificado
+                if (!childNode.type) childNode.type = 'task';
+                childNodesContainer.appendChild(createNode(childNode, level + 1));
+            });
+            nodeContent.appendChild(childNodesContainer);
+        }
+
+        nodeCard.appendChild(nodeContent);
+
+        // Adiciona funcionalidade de expandir/contrair para nós com filhos
+        if (nodeData.nodes && nodeData.nodes.length > 0) {
+            nodeHeader.addEventListener('click', (e) => {
+                // Previne que o clique no header de uma tarefa tente expandir/colapsar
+                if (nodeData.type !== 'task') {
+                     e.stopPropagation(); // Impede que o evento se propague para cards pais, caso haja aninhamento de clickables
+                    nodeCard.classList.toggle('expanded');
+                }
+            });
+        }
+
+        return nodeCard;
+    }
+
+    // Renderiza as fases principais
+    if (mindMapContainer && CLIENT_DATA.phases) {
+        CLIENT_DATA.phases.forEach(phase => {
+             if (!phase.type) phase.type = 'phase'; // Garante que fases principais tenham tipo
+            mindMapContainer.appendChild(createNode(phase));
         });
+    } else {
+        console.error("Elemento 'mind-map-container' não encontrado ou CLIENT_DATA.phases não definido.");
+    }
 
-        phaseSection.appendChild(phaseContent);
-        contentAreaElem.appendChild(phaseSection);
-
-        // Adiciona evento de clique para expandir/contrair
-        phaseHeader.addEventListener('click', () => {
-            phaseContent.classList.toggle('active');
-            phaseHeader.querySelector('i').classList.toggle('fa-chevron-down');
-            phaseHeader.querySelector('i').classList.toggle('fa-chevron-up');
-        });
-    });
-
-    // Calcula e atualiza o progresso geral
-    const overallProgress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
-    overallProgressBar.style.width = `${overallProgress.toFixed(2)}%`;
-    overallProgressText.textContent = `${overallProgress.toFixed(0)}% Concluído (${completedTasks}/${totalTasks} Tarefas)`;
-
-    // Abre a primeira seção por padrão (opcional)
-    if (clientData.phases.length > 0) {
-        document.getElementById(clientData.phases[0].id).querySelector('.phase-content').classList.add('active');
-        document.getElementById(clientData.phases[0].id).querySelector('.phase-header i').classList.remove('fa-chevron-down');
-        document.getElementById(clientData.phases[0].id).querySelector('.phase-header i').classList.add('fa-chevron-up');
+    // Atualiza o progresso geral após renderizar todos os nós
+    if (overallProgressBar && overallProgressText) {
+        const overallProgress = totalTasksCount > 0 ? (completedTasksCount / totalTasksCount) * 100 : 0;
+        overallProgressBar.style.width = `${overallProgress.toFixed(2)}%`;
+        overallProgressText.textContent = `${overallProgress.toFixed(0)}% Concluído (${completedTasksCount}/${totalTasksCount} tarefas)`;
+    } else {
+        console.error("Elementos da barra de progresso não encontrados.");
     }
 });
