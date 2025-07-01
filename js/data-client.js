@@ -3,31 +3,31 @@ const CLIENT_DATA = {
   clientName: "Casas Goianita",
   contact: "A definir",
   company: "GRUPO UGESTOR",
-  consultant: "A definir",
-  startDate: "A definir",
+  consultant: "Luiz Portal", // Atualizado
+  startDate: "2025-07-15",   // Atualizado
   goLiveDate: "A definir",
-  endDate: "A definir",
+  endDate: "2026-01-15",     // Calculado (6 meses após a data de início)
   phases: [
     {
       id: "1-auditoria-e-diagnostico",
       name: "1. Auditoria e Diagnóstico Inicial",
       description: "Levantamento completo da situação atual da empresa nos âmbitos de estoque, financeiro e trabalhista para embasar as próximas ações.",
-      type: "phase", // Adicionado type
-      nodes: [ // Renomeado de sub_phases para nodes
+      type: "phase",
+      nodes: [
         {
           id: "1-1-auditorias",
           name: "Auditorias",
           description: "Execução de auditorias em áreas críticas da empresa.",
-          type: "sub-phase", // Adicionado type
-          nodes: [ // Renomeado de tasks para nodes
+          type: "sub-phase",
+          nodes: [
             {
               id: "1-1-1-auditoria-inventario",
               name: "Auditoria de Inventário (Estoque e Imobilizado)",
               details: "Realizar a contagem e auditoria do estoque de produtos de revenda e do ativo imobilizado nas três lojas.",
               responsible: "Equipe UGESTOR",
               dueDate: "A definir",
-              status: "pending",
-              type: "task", // Adicionado type
+              status: "completed", // Atualizado
+              type: "task",
             },
             {
               id: "1-1-2-auditoria-financeira",
@@ -35,7 +35,7 @@ const CLIENT_DATA = {
               details: "Levantamento de todas as contas a pagar, a receber e dívidas em aberto para um panorama financeiro completo.",
               responsible: "Equipe UGESTOR",
               dueDate: "A definir",
-              status: "pending",
+              status: "completed", // Atualizado
               type: "task",
             },
             {
@@ -117,7 +117,7 @@ const CLIENT_DATA = {
       name: "3. Estrutura Organizacional e Pessoas",
       description: "Redefinição da estrutura da empresa e análise das competências da equipe.",
       type: "phase",
-      nodes: [ // Renomeado de tasks para nodes e ajustado para type: "task"
+      nodes: [
         {
           id: "3-1-estruturacao-organograma",
           name: "Estruturação do Organograma",
