@@ -1,28 +1,35 @@
-/* Importação de fontes (ajuste conforme a identidade visual da Live) */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@400;600&display=swap');
+/* Importação de fontes da Live */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Merriweather:wght@400;700&display=swap');
 
 :root {
-    /* Cores da Identidade Visual da Live (Ajuste esses valores) */
-    --live-blue-primary: #0056B3;
-    --live-grey-secondary: #6C757D;
-    --live-accent: #FF6F00;
-    --live-background-light: #F8F9FA;
-    --live-text-dark: #343A40;
+    /* Cores da Identidade Visual da Live (extraídas da documentação) */
+    --live-azul-petroleo: #06192a;
+    --live-verde-vibrante: #00e800;
+    --live-cinza-claro: #f4f4f4;
+    --live-branco: #FFFFFF;
 
-    /* Cores de Status */
-    --status-completed: #28A745; /* Verde */
-    --status-in-progress: #FFC107; /* Amarelo */
-    --status-pending: #6C757D; /* Cinza do Live Grey */
-    --status-overdue: #DC3545; /* Vermelho */
+    /* Mapeamento para nomes de variáveis mais genéricos (opcional, mas recomendado para clareza) */
+    --primary-brand-color: var(--live-azul-petroleo); /* Cor principal para fundos escuros, textos */
+    --accent-brand-color: var(--live-verde-vibrante); /* Cor de destaque para CTAs, ícones, progresso */
+    --background-light-color: var(--live-cinza-claro); /* Fundo claro da aplicação */
+    --text-on-dark-color: var(--live-branco); /* Texto sobre fundos escuros */
+    --text-on-light-color: var(--live-azul-petroleo); /* Texto sobre fundos claros */
 
-    /* Fontes da Identidade Visual da Live (Ajuste esses valores) */
-    --font-heading: 'Montserrat', sans-serif;
-    --font-body: 'Open Sans', sans-serif;
+    /* Cores de Status (adaptadas para o esquema da Live) */
+    --status-completed: var(--accent-brand-color); /* Verde para Concluído */
+    --status-in-progress: #FFC107; /* Amarelo padrão (não definido na doc, mantido como bom contraste) */
+    --status-pending: var(--primary-brand-color); /* Azul Petróleo para Pendente */
+    --status-overdue: #DC3545; /* Vermelho padrão (não definido na doc, mantido como alerta) */
 
-    /* Outros */
+    /* Fontes da Identidade Visual da Live (extraídas da documentação) */
+    --font-heading: 'Poppins', sans-serif; /* Poppins para títulos (pesos 700) */
+    --font-body: 'Poppins', sans-serif; /* Poppins para corpo do texto (pesos 300, 400, 600) */
+    --font-secondary: 'Merriweather', serif; /* Merriweather para citações e destaques clássicos */
+
+    /* Outros valores de design (ajuste se necessário) */
     --border-radius-soft: 8px;
-    --shadow-deep: 0 10px 25px rgba(0,0,0,0.1);
-    --shadow-light: 0 4px 10px rgba(0,0,0,0.08);
+    --shadow-deep: 0 10px 25px rgba(0,0,0,0.15); /* Sombra mais intensa */
+    --shadow-light: 0 4px 10px rgba(0,0,0,0.1); /* Sombra mais suave */
 }
 
 * {
@@ -33,13 +40,16 @@
 
 body {
     font-family: var(--font-body);
-    color: var(--live-text-dark);
+    color: var(--text-on-light-color); /* Texto padrão em azul petróleo sobre fundo claro */
     line-height: 1.6;
-    background-color: var(--live-background-light);
-    /* Adiciona uma textura sutil de fundo - ajuste o caminho da imagem */
-    background-image: url('../assets/subtle-texture.png'); /* Crie ou encontre uma imagem de textura sutil */
-    background-repeat: repeat;
+    background-color: var(--background-light-color); /* Fundo claro principal */
+    /* Adiciona uma textura sutil de fundo conforme a identidade visual da Live */
+    background-image: radial-gradient(circle at 50% 0, rgba(255, 255, 255, 0.05), transparent 50%); /* Exemplo do documento */
+    background-repeat: no-repeat; /* Para o gradiente radial */
     background-attachment: fixed;
+    min-height: 100vh; /* Garante que o body ocupa toda a altura da viewport */
+    display: flex;
+    flex-direction: column;
 }
 
 .container {
@@ -49,54 +59,51 @@ body {
 }
 
 .live-header {
-    background: linear-gradient(135deg, var(--live-blue-primary), darken(var(--live-blue-primary), 15%)); /* Gradiente sutil */
-    color: white;
+    /* Gradiente e imagem de fundo conforme a doc para seções Hero/CTA */
+    background: linear-gradient(rgba(6, 25, 42, 0.85), rgba(6, 25, 42, 1)), url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2832&auto=format&fit=crop') no-repeat center center; /* Exemplo de imagem, use uma imagem apropriada */
+    background-size: cover;
+    color: var(--text-on-dark-color); /* Texto branco sobre fundo escuro */
     padding: 40px 0;
     text-align: center;
     box-shadow: var(--shadow-deep);
-    position: relative; /* Para a textura do header */
-    overflow: hidden; /* Garante que a textura não vaze */
+    position: relative;
+    overflow: hidden;
 }
 
-.live-header::before { /* Textura abstrata no header */
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill-opacity=".05"><rect x="0" y="0" width="100" height="100" fill="white"/><circle cx="50" cy="50" r="40" fill="white"/></svg>'); /* Exemplo de SVG para textura geométrica */
-    background-size: 20px 20px;
-    opacity: 0.1;
-    z-index: 0;
-}
+/* Remover ::before da textura do header se a imagem de fundo já for a textura */
+/* .live-header::before { ... } */
 
 .live-header > .container {
-    position: relative; /* Conteúdo acima da textura */
+    position: relative;
     z-index: 1;
 }
 
 .live-header h1 {
     font-family: var(--font-heading);
-    font-weight: 700;
+    font-weight: 700; /* Poppins Bold para títulos */
     margin-bottom: 10px;
     font-size: 2.8em;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Sombra de texto para títulos */
 }
 
 .live-header p#client-info {
+    font-family: var(--font-body);
+    font-weight: 400; /* Poppins Regular para corpo */
     font-size: 1.2em;
     margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Sombra de texto para texto comum */
 }
 
 .project-summary span {
+    font-family: var(--font-body);
+    font-weight: 600; /* Poppins Semibold */
     display: inline-block;
-    background-color: rgba(255,255,255,0.15);
+    background-color: rgba(255,255,255,0.15); /* Fundo branco semi-transparente */
     padding: 8px 15px;
     border-radius: var(--border-radius-soft);
     margin: 0 10px 10px;
     font-size: 0.9em;
-    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Sombra de texto para texto comum */
 }
 
 /* Overall Progress Bar */
@@ -104,16 +111,19 @@ body {
     width: 80%;
     margin: 20px auto 0;
     text-align: left;
-    background-color: rgba(255,255,255,0.1);
+    background-color: var(--live-azul-petroleo); /* Azul petróleo para o container do progresso */
+    color: var(--text-on-dark-color); /* Texto branco no container do progresso */
     border-radius: var(--border-radius-soft);
     padding: 15px 25px;
     box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
 }
 
 .progress-bar-label {
+    font-family: var(--font-body);
+    font-weight: 600; /* Poppins Semibold */
     font-size: 1.1em;
-    font-weight: 600;
     margin-bottom: 8px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Sombra de texto */
 }
 
 .progress-bar-wrapper {
@@ -127,13 +137,13 @@ body {
 .progress-bar {
     height: 100%;
     width: 0%;
-    background-color: var(--live-accent);
-    transition: width 0.8s ease-out; /* Movimento suave */
+    background-color: var(--accent-brand-color); /* Verde Vibrante da Live para o progresso */
+    transition: width 0.8s ease-out;
     border-radius: 5px;
     position: relative;
 }
 
-.progress-bar::after { /* Pequeno gradiente para profundidade */
+.progress-bar::after {
     content: '';
     position: absolute;
     top: 0;
@@ -144,19 +154,28 @@ body {
 }
 
 #overall-progress-text {
+    font-family: var(--font-body);
+    font-weight: 600; /* Poppins Semibold */
     display: block;
     text-align: right;
     margin-top: 5px;
-    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Sombra de texto */
+}
+
+.main-content {
+    flex-grow: 1; /* Permite que o conteúdo principal ocupe o espaço restante */
 }
 
 .live-footer {
-    background-color: var(--live-text-dark); /* Fundo escuro para contraste */
-    color: white;
+    background-color: var(--primary-brand-color); /* Azul Petróleo para o rodapé */
+    color: var(--text-on-dark-color); /* Texto branco */
     padding: 20px 0;
     text-align: center;
     margin-top: 50px;
     box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+    font-family: var(--font-body);
+    font-weight: 400; /* Poppins Regular */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Sombra de texto */
 }
 
 /* Responsividade */
